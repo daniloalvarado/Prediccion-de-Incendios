@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema IA</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Animation Text (cuando se refresca la página) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- Choices.js (select) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
+    <!-- Boxicons (Close) for Modal -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <!-- Mapa y para dibujar en el -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+</head>
+
+<body class="loading">
+
+    <!-- PRELOADER LINE ANIMATION  -->
+    <div class="preloader" data-preloader>
+        <span class="line"></span>
+    </div>
+    <!-- END PRELOADER LINE ANIMATION  -->
+
+    <!-- HEADER/NAVBAR -->
+    <header class="nav animate__animated animate__fadeInDown animate__delay-1s">
+        <a href="#" class="brand">FISI<span style="color: white">.</span></a>
+        <div class="menu-btn"></div>
+        <div class="navigation">
+            <div class="navigation-items">
+                <a href="#home">INICIO</a>
+                <a href="#mapa">MAPA</a>
+                <a href="#nosotros">NOSOTROS</a>
+                <a href="#contactanos">CONTÁCTANOS</a>
+            </div>
+        </div>
+    </header>
+    <!-- END HEADER/NAVBAR -->
+
+    <!-- HOMEPAGE SECTION -->
+    <section id="home" class="showcase">
+
+        <!-- <video class="animate__animated animate__zoomInDown" src="Images/bg2.mp4" muted loop autoplay></video> -->
+        <!-- <img class="bg" src="Images/bg.jpg" alt=""> -->
+        <img class="bg" src="{{ url_for('static', filename='Images/bg.jpg') }}" alt="">
+        <!-- <div class="overlay"></div> -->
+
+        <div class="text">
+            <h2 class="animate__animated animate__zoomInDown">PREDICCIÓN DE INCENDIOS</h2>
+            <h2 class="animate__animated animate__zoomInDown">FORESTALES EN LA</h2>
+            <h2 class="animate__animated animate__zoomInDown">SELVA PERUANA</h2>
+        </div>
+
+        <ul class="social animate__animated animate__zoomInDown">
+            <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-linkedin"></i></a></li>
+        </ul>
+
+        <img src="{{ url_for('static', filename='Images/robot.jpg') }}" id="open-modal"
+            class="modal__button animate__animated animate__zoomInDown" alt="Open Modal">
+
+        <div class=" modal__container" id="modal-container">
+            <div class="modal__content">
+                <div class="modal__close close-modal" title="Close">
+                    <i class='bx bx-x'></i>
+                </div>
+
+                <h1 class="modal__title">Sobre el sistema!</h1>
+                <p class="modal__description">
+                    Este sistema de predicción de incendios forestales en la selva peruana
+                    ha sido desarrollado utilizando datos satelitales confiables de la NASA
+                    y usando el modelo de inteligencia artificial Random Forest,
+                    logrando una precisión del 90.25% en pruebas reales. Gracias al
+                    uso de variables meteorológicas clave como temperatura, humedad,
+                    precipitación y viento, y a una validación rigurosa con miles de
+                    registros históricos, el modelo ofrece resultados sólidos y equilibrados.
+                    <strong>Esto permite afirmar con confianza que se trata de una herramienta
+                        fiable y efectiva para anticipar riesgos y apoyar la prevención de
+                        incendios en algunas regiones del país.</strong>
+                </p>
+            </div>
+        </div>
+
+    </section>
+    <!-- END HOMEPAGE SECTION -->
+
+    <!-- MAPA SECTION -->
+
+    <div id="mapa" style="height: 82px;"></div>
+
+    <div class="controls">
+        <div id="region-container">
+            <select id="region" autocomplete="region" onchange="seleccionarDepartamento(this.value)">
+                <option value="Loreto">Loreto</option>
+                <option value="Ucayali">Ucayali</option>
+                <option value="Madre de Dios">Madre de Dios</option>
+                <option value="San Martín">San Martín</option>
+                <option value="Huánuco">Huánuco / Pasco / Junín</option>
+                <option value="Amazonas">Amazonas</option>
+                <option value="Puno">Puno / Cusco</option>
+            </select>
+        </div>
+
+        <button class="limpiar_mapa" onclick="limpiarMapa()">Limpiar mapa</button>
+        <button class="ver_todos" onclick="verTodos()">Ver todos los puntos</button>
+
+        <div class="lat_long">
+            <input type="number" step="any" id="input-lat" placeholder="Latitud" class="latitud" style="width: 120px;">
+            <input type="number" step="any" id="input-lon" placeholder="Longitud" class="longitud"
+                style="width: 120px;">
+        </div>
+        <button class="buscar_coordenadas" onclick="buscarCoordenadas()">Buscar</button>
+
+        <div id="dia-selector">
+            <label for="select-dia">Día a Predecir:</label>
+            <select id="select-dia"></select>
+        </div>
+
+    </div>
+
+    <div class="map-container">
+        <div class="info-box">
+            <strong style="display: flex; justify-content: center;">¿QUÉ ESTÁS VIENDO?</strong><br>
+            🔴 <strong>Rojo</strong>: Probalidad Alta 75% - 100%<br>
+            🟡 <strong>Amarillo</strong>: Probabilidad Media 50% - 74%<br>
+            🟢 <strong>Verde</strong>: Probabilidad Baja 0% - 49%<br><br>
+            Haz clic en un punto para ver detalles como temperatura, humedad, precipitación y viento.<br><br>
+            También puedes <strong>dibujar una zona</strong> para analizar un área personalizada.
+        </div>
+        <div id="map"></div>
+    </div>
+    <!-- END MAPA SECTION
+
+
+    <!-- DESCRIPCIÓN DEL TEAM SECTION -->
+    <div class="description autoShow" id="nosotros">
+        <h1 class="text-center section-heading">EQUIPO<span> DE TRABAJO</span></h1>
+    </div>
+
+    <!-- TEAM SECTION -->
+    <div class="big-container">
+        <div class="container">
+            <div class="card animate__animated animate__zoomInDown">
+                <div class="imgBx">
+                    <!-- <img class="autoShowFinal" src="Images/admin.png" alt=""> -->
+                    <img src="{{ url_for('static', filename='Images/admin.png') }}" alt="" class="autoShowFinal">
+                </div>
+                <div class="details">
+                    <div class="content">
+                        <span class="circle one autoShow"></span>
+                        <span class="circle two autoShowFinal"></span>
+                        <h2 class="autoShowFinal">Danilo Alvarado<br>
+                            <span>Desarrollador Backend</span>
+                        </h2>
+                        <ul class="autoShowFinal">
+                            <li><a href="#">Fa</a></li>
+                            <li><a href="#">Tw</a></li>
+                            <li><a href="#">Yt</a></li>
+                            <li><a href="#">In</a></li>
+                        </ul>
+                        <a class="autoShowFinal" style="margin-top: 10px;" href="#">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate__animated animate__zoomInDown">
+                <div class="imgBx">
+                    <img src="{{ url_for('static', filename='Images/admin3.jpg') }}" alt="" class="autoShowFinal">
+                </div>
+                <div class="details">
+                    <div class="content">
+                        <span class="circle one autoShow"></span>
+                        <span class="circle two autoShowFinal"></span>
+                        <h2 class="autoShowFinal">Daniel Nogueira<br>
+                            <span>Ingeniero de Datos</span>
+                        </h2>
+                        <ul class="autoShowFinal">
+                            <li><a href="#">Fa</a></li>
+                            <li><a href="#">Tw</a></li>
+                            <li><a href="#">Yt</a></li>
+                            <li><a href="#">In</a></li>
+                        </ul>
+                        <a class="autoShowFinal" style="margin-top: 10px;" href="#">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate__animated animate__zoomInUp">
+                <div class="imgBx">
+                    <img src="{{ url_for('static', filename='Images/admin2.jpg') }}" alt="" class="autoShowFinal">
+                </div>
+                <div class="details">
+                    <div class="content">
+                        <span class="circle one autoShow"></span>
+                        <span class="circle two autoShowFinal"></span>
+                        <h2 class="autoShowFinal">Cristian Villaverde<br>
+                            <span>Desarrollador Frontend</span>
+                        </h2>
+                        <ul class="autoShowFinal">
+                            <li><a href="#">Fa</a></li>
+                            <li><a href="#">Tw</a></li>
+                            <li><a href="#">Yt</a></li>
+                            <li><a href="#">In</a></li>
+                        </ul>
+                        <a class="autoShowFinal" style="margin-top: 10px;" href="#">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate__animated animate__zoomInUp">
+                <div class="imgBx">
+                    <img src="{{ url_for('static', filename='Images/adminmujer.jpg') }}" alt="" class="autoShowFinal">
+                </div>
+                <div class="details">
+                    <div class="content">
+                        <span class="circle one autoShow"></span>
+                        <span class="circle two autoShowFinal"></span>
+                        <h2 class="autoShowFinal">Angie Cabanillas<br>
+                            <span>Documentadora Técnica</span>
+                        </h2>
+                        <ul>
+                            <li class="autoShowFinal"><a href="#">Fa</a></li>
+                            <li class="autoShowFinal"><a href="#">Tw</a></li>
+                            <li class="autoShowFinal"><a href="#">Yt</a></li>
+                            <li class="autoShowFinal"><a href="#">In</a></li>
+                        </ul>
+                        <a class="autoShowFinal" style="margin-top: 10px;" href="#">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TEAM SECTION -->
+
+    <hr id="contactanos" style="background-color: black; border: none;">
+
+
+    <!-- CONTACT SECTION -->
+    <div class="container_contact autoShowFinal2">
+        <span class="big-circle animate__animated animate__zoomInUp"></span>
+        <img src="{{ url_for('static', filename='Images/shape2.png') }}"
+            class="square animate__animated animate__zoomInUp" alt="" />
+        <div class="form animate__animated animate__fadeInUpBig">
+            <div class="contact-info">
+                <h3 class="title autoShowFinal">Nuestros canales de contacto!</h3>
+                <p class="text">
+                    Comunícate con nosotros, te responderemos lo antes posible!
+                </p>
+
+                <div class="info">
+                    <div class="information">
+                        <img src="{{ url_for('static', filename='Images/location2.png') }}" class="icon" alt="" />
+                        <p>Pevas cuadra 5</p>
+                    </div>
+                    <div class="information">
+                        <img src="{{ url_for('static', filename='Images/email2.png') }}" class="icon" alt="" />
+                        <p>prediceincendios@gmail.com</p>
+                    </div>
+                    <div class="information">
+                        <img src="{{ url_for('static', filename='Images/phone2.png') }}" class="icon" alt="" />
+                        <p>+51 953 808 566</p>
+                    </div>
+                </div>
+
+                <div class="social-media">
+                    <p>Siguenos en :</p>
+                    <div class="social-icons">
+                        <a href="#">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <span class="circle one"></span>
+                <span class="circle two"></span>
+
+                <form action="index.html" autocomplete="on">
+                    <h3 class="title">CONTÁCTANOS</h3>
+                    <div class="input-container">
+                        <input type="text" name="name" id="name" class="input" autocomplete="name"/>
+                        <label for="name">Nombre</label>
+                        <span>Nombre</span>
+                    </div>
+                    <div class="input-container">
+                        <input type="email" name="email" id="email" class="input" autocomplete="email"/>
+                        <label for="email">Email</label>
+                        <span>Email</span>
+                    </div>
+                    <div class="input-container">
+                        <input type="tel" name="phone" id="tel" class="input" autocomplete="tel"/>
+                        <label for="tel">Celular</label>
+                        <span>Celular</span>
+                    </div>
+                    <div class="input-container textarea">
+                        <textarea name="message" id="message" class="input"></textarea>
+                        <label for="message">Mensaje</label>
+                        <span>Mensaje</span>
+                    </div>
+                    <input type="submit" value="Enviar" class="btn" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTACT SECTION -->
+
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Mapa -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <!-- emailjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
