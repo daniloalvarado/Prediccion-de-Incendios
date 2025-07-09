@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 import os
+from pytz import timezone
 
 # Inicializa Flask con carpetas de templates y estáticos
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -76,7 +77,7 @@ def predecir():
     except ValueError:
         return jsonify({"error": "Fecha inválida. Formato: YYYY-MM-DD"}), 400
 
-    hoy = datetime.today().date()
+    hoy = datetime.now(timezone('America/Lima')).date()
     if not (0 <= (fecha_objetivo - hoy).days <= 15):
         return jsonify({"error": "La fecha debe estar dentro de los próximos 16 días."}), 400
 
