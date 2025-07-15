@@ -346,12 +346,14 @@ header .navigation .navigation-items a:hover:before {
 .showcase .social li a {
   color: #fff;
   font-size: 20px;
-  transform: scale(0.5);
-  transition: 0.5s;
 }
 
-.showcase .social li a:hover {
-  transform: scale(0.5) translateY(-15px);
+.showcase .social li a i{
+  transition: .5s;
+}
+
+.showcase .social li a i:hover {
+  transform: translateY(-5px);
 }
 
 @media (max-width: 991px) {
@@ -607,7 +609,7 @@ input::placeholder {
 
 
 #dia-selector {
-  z-index: 4;
+  z-index: 3;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -686,7 +688,7 @@ input::placeholder {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 3;
+  z-index: 2;
   max-width: 350px;
   backdrop-filter: blur(10px);
   color: white;

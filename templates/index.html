@@ -80,11 +80,11 @@
                 <p class="modal__description">
                     Este sistema de predicción de incendios forestales en la selva peruana
                     ha sido desarrollado utilizando datos satelitales confiables de la NASA
-                    y usando el modelo de inteligencia artificial Random Forest,
-                    logrando una precisión del 90.25% en pruebas reales. Gracias al
+                    y usando el modelo de Machine Learning XGBoost,
+                    logrando una precisión del 93.33% en pruebas reales. Gracias al
                     uso de variables meteorológicas clave como temperatura, humedad,
-                    precipitación y viento, y a una validación rigurosa con miles de
-                    registros históricos, el modelo ofrece resultados sólidos y equilibrados.
+                    precipitación y viento, y una validación rigurosa con miles de
+                    registros históricos de FIRMS, el modelo ofrece resultados sólidos y equilibrados.
                     <strong>Esto permite afirmar con confianza que se trata de una herramienta
                         fiable y efectiva para anticipar riesgos y apoyar la prevención de
                         incendios en algunas regiones del país.</strong>
@@ -299,17 +299,17 @@
                 <form action="index.html" autocomplete="on">
                     <h3 class="title">CONTÁCTANOS</h3>
                     <div class="input-container">
-                        <input type="text" name="name" id="name" class="input" autocomplete="name"/>
+                        <input type="text" name="name" id="name" class="input" autocomplete="name" />
                         <label for="name">Nombre</label>
                         <span>Nombre</span>
                     </div>
                     <div class="input-container">
-                        <input type="email" name="email" id="email" class="input" autocomplete="email"/>
+                        <input type="email" name="email" id="email" class="input" autocomplete="email" />
                         <label for="email">Email</label>
                         <span>Email</span>
                     </div>
                     <div class="input-container">
-                        <input type="tel" name="phone" id="tel" class="input" autocomplete="tel"/>
+                        <input type="tel" name="phone" id="tel" class="input" autocomplete="tel" />
                         <label for="tel">Celular</label>
                         <span>Celular</span>
                     </div>
@@ -335,7 +335,6 @@
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <!-- emailjs -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
