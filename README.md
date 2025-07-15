@@ -1,4 +1,4 @@
-<h1>sistema de predicción de incendios forestales en la selva peruana</h1>
+<h1>Sistema de predicción de incendios forestales en la selva peruana</h1>
 Este sistema de predicción de incendios forestales en la selva peruana
 ha sido desarrollado utilizando datos satelitales confiables de la NASA
 y usando el modelo de Machine Learning XGBoost,
