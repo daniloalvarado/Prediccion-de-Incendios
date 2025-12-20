@@ -9,3 +9,4 @@ registros históricos de FIRMS, el modelo ofrece resultados sólidos y equilibra
 <strong>Esto permite afirmar con confianza que se trata de una herramienta
 fiable y efectiva para anticipar riesgos y apoyar la prevención de
 incendios en algunas regiones del país.</strong>
+<img src="https://github.com/daniloalvarado/Prediccion-de-Incendios/tree/main/static/Images/project-W.webp" alt="Predicción de incendios Forestales"/>
